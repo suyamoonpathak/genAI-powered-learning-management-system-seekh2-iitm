@@ -1,0 +1,6 @@
+venv
+.env
+faiss_index.bin
+text_chunks.npy
+
+src/__pycache__/

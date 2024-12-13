@@ -1,0 +1,2771 @@
+openapi: 3.0.0
+info:
+  title: Seekh 2
+  version: 1.0.0
+  description: API for managing the Seekh 2 portal
+paths:
+
+  /register:
+    post:
+      summary: Register a new user
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User registered successfully
+        '400':
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User already exists
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+
+  /login:
+    post:
+      summary: User login
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      username:
+                        type: string
+                      email:
+                        type: string
+                      role:
+                        type: string
+        '401':
+          description: Invalid email or password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid email or password
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request
+  /profile/{user_id}:
+    get:
+      summary: Get user profile
+      tags:
+        - User
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object  # Ensure this is defined as an object
+                properties:
+                  user_id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Profile not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+    put:
+      summary: Update user profile
+      tags:
+        - User
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                role:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                  username:
+                    type: string
+                  email:
+                    type: string
+                  role:
+                    type: string
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Profile not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+
+  /courses:
+    post:
+      summary: Create a new course
+      tags:
+        - Course
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_name:
+                  type: string
+                description:
+                  type: string
+                instructor_id:
+                  type: integer
+                category:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+      responses:
+        '201':
+          description: Course created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: integer
+                  course_name:
+                    type: string
+                  description:
+                    type: string
+                  instructor_id:
+                    type: integer
+                  category:
+                    type: string
+                  start_date:
+                    type: string
+                    format: date
+                  end_date:
+                    type: string
+                    format: date
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+    get:
+      summary: Get all courses
+      tags:
+        - Course
+      responses:
+        '200':
+          description: Courses retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    course_id:
+                      type: integer
+                    course_name:
+                      type: string
+                    description:
+                      type: string
+                    instructor_id:
+                      type: integer
+                    category:
+                      type: string
+                    start_date:
+                      type: string
+                      format: date
+                    end_date:
+                      type: string
+                      format: date
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+  /courses/{course_id}:
+    get:
+      summary: Get details of a specific course
+      tags:
+        - Course
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: integer
+                  course_name:
+                    type: string
+                  description:
+                    type: string
+                  instructor_id:
+                    type: integer
+                  category:
+                    type: string
+                  start_date:
+                    type: string
+                    format: date
+                  end_date:
+                    type: string
+                    format: date
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Course not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+    put:
+      summary: Update details of a specific course
+      tags:
+        - Course
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_name:
+                  type: string
+                description:
+                  type: string
+                category:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Course updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  course_id:
+                    type: integer
+                  course_name:
+                    type: string
+                  description:
+                    type: string
+                  instructor_id:
+                    type: integer
+                  category:
+                    type: string
+                  start_date:
+                    type: string
+                    format: date
+                  end_date:
+                    type: string
+                    format: date
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Course not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+    delete:
+      summary: Delete a specific course
+      tags:
+        - Course
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Course deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Course deleted successfully
+        '404':
+          description: Course not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Course not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+  
+  /courses/modules:
+    post:
+      summary: Create a new module within a specific course
+      tags:
+        - Module
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_id:
+                  type: integer
+                module_name:
+                  type: string
+                order:
+                  type: integer
+      responses:
+        '201':
+          description: Module created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  module_id:
+                    type: integer
+                  course_id:
+                    type: integer
+                  module_name:
+                    type: string
+                  order:
+                    type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+  /modules/{module_id}:
+    get:
+      summary: Get details of a specific module
+      tags:
+        - Module
+      parameters:
+        - name: module_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Module details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  module_id:
+                    type: integer
+                  course_id:
+                    type: integer
+                  module_name:
+                    type: string
+                  order:
+                    type: integer
+        '404':
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Module not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+    put:
+      summary: Update details of a specific module
+      tags:
+        - Module
+      parameters:
+        - name: module_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module_name:
+                  type: string
+                order:
+                  type: integer
+      responses:
+        '200':
+          description: Module updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  module_id:
+                    type: integer
+                  course_id:
+                    type: integer
+                  module_name:
+                    type: string
+                  order:
+                    type: integer
+        '404':
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Module not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+    delete:
+      summary: Delete a specific module
+      tags:
+        - Module
+      parameters:
+        - name: module_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Module deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Module deleted successfully
+        '404':
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Module not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+  /courses/{course_id}/modules:
+    get:
+      summary: Get all modules within a specific course
+      tags:
+        - Module
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Modules retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    module_id:
+                      type: integer
+                    course_id:
+                      type: integer
+                    module_name:
+                      type: string
+                    order:
+                      type: integer
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+
+
+
+  /lessons:
+    post:
+      summary: Create a new lesson within a specific module
+      tags:
+        - Lesson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                module_id:
+                  type: integer
+                lesson_name:
+                  type: string
+                content:
+                  type: string
+                video_url:
+                  type: string
+                transcript:
+                  type: string
+      responses:
+        '201':
+          description: Lesson created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lesson_id:
+                    type: integer
+                  module_id:
+                    type: integer
+                  lesson_name:
+                    type: string
+                  content:
+                    type: string
+                  video_url:
+                    type: string
+                  transcript:
+                    type: string
+        '404':
+          description: Module not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Module not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+  /lessons/{lesson_id}:
+    get:
+      summary: Retrieve details of a specific lesson
+      tags:
+        - Lesson
+      parameters:
+        - name: lesson_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lesson details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lesson_id:
+                    type: integer
+                  module_id:
+                    type: integer
+                  lesson_name:
+                    type: string
+                  content:
+                    type: string
+                  video_url:
+                    type: string
+                  transcript:
+                    type: string
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Lesson not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+    put:
+      summary: Update details of a specific lesson
+      tags:
+        - Lesson
+      parameters:
+        - name: lesson_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lesson_name:
+                  type: string
+                content:
+                  type: string
+                video_url:
+                  type: string
+                transcript:
+                  type: string
+      responses:
+        '200':
+          description: Lesson updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lesson_id:
+                    type: integer
+                  module_id:
+                    type: integer
+                  lesson_name:
+                    type: string
+                  content:
+                    type: string
+                  video_url:
+                    type: string
+                  transcript:
+                    type: string
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Lesson not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+    delete:
+      summary: Delete a specific lesson
+      tags:
+        - Lesson
+      parameters:
+        - name: lesson_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lesson deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Lesson deleted successfully
+        '404':
+          description: Lesson not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Lesson not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+  /modules/{module_id}/lessons:
+    get:
+      summary: Retrieve a list of all lessons within a specific module
+      tags:
+        - Lesson
+      parameters:
+        - name: module_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Lessons retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    lesson_id:
+                      type: integer
+                    module_id:
+                      type: integer
+                    lesson_name:
+                      type: string
+                    content:
+                      type: string
+                    video_url:
+                      type: string
+                    transcript:
+                      type: string
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Server error
+
+  
+  /courses/assignments:
+    post:
+      summary: Create a new assignment within a specific course
+      tags:
+        - Assignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                course_id:
+                  type: integer
+                title:
+                  type: string
+                description:
+                  type: string
+                type:
+                  type: string
+                due_date:
+                  type: string
+                  format: date
+      responses:
+        '201':
+          description: Assignment created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignment_id:
+                    type: integer
+                  course_id:
+                    type: integer
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  type:
+                    type: string
+                  due_date:
+                    type: string
+                    format: date
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+  /assignments/{assignment_id}:
+    get:
+      summary: Get details of a specific assignment
+      tags:
+        - Assignment
+      parameters:
+        - name: assignment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Assignment details retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignment_id:
+                    type: integer
+                  course_id:
+                    type: integer
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  type:
+                    type: string
+                  due_date:
+                    type: string
+                    format: date
+        '404':
+          description: Assignment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Assignment not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+    put:
+      summary: Update details of a specific assignment
+      tags:
+        - Assignment
+      parameters:
+        - name: assignment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                type:
+                  type: string
+                due_date:
+                  type: string
+                  format: date
+      responses:
+        '200':
+          description: Assignment updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  assignment_id:
+                    type: integer
+                  course_id:
+                    type: integer
+                  title:
+                    type: string
+                  description:
+                    type: string
+                  type:
+                    type: string
+                  due_date:
+                    type: string
+                    format: date
+        '404':
+          description: Assignment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Assignment not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+    delete:
+      summary: Delete a specific assignment
+      tags:
+        - Assignment
+      parameters:
+        - name: assignment_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Assignment deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Assignment deleted successfully
+        '404':
+          description: Assignment not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Assignment not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+  /courses/{course_id}/assignments:
+    get:
+      summary: Get all assignments within a specific course
+      tags:
+        - Assignment
+      parameters:
+        - name: course_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Assignments retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    assignment_id:
+                      type: integer
+                    course_id:
+                      type: integer
+                    title:
+                      type: string
+                    description:
+                      type: string
+                    type:
+                      type: string
+                    due_date:
+                      type: string
+                      format: date
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Server error
+
+  /courses/programmingassignments:
+    post:
+      summary: Create a new programming assignment
+      description: Creates a new programming assignment for a course
+      tags: [Programming Assignments]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgrammingAssignment'  # Reference model if defined
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgrammingAssignment'  # Reference model if defined
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  
+  /programmingAssignments/{programming_assignment_id}:
+    get:
+      summary: Get programming assignment details
+      description: Gets the details of a specific programming assignment
+      tags: [Programming Assignments]
+      parameters:
+        - in: path
+          name: programming_assignment_id
+          required: true
+          description: The ID of the programming assignment
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgrammingAssignment'  # Reference model if defined
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+
+    put:
+      summary: Update programming assignment details
+      description: Updates the details of a specific programming assignment
+      tags: [Programming Assignments]
+      parameters:
+        - in: path
+          name: programming_assignment_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the programming assignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProgrammingAssignment'  # Reference model if defined
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProgrammingAssignment'  # Reference model if defined
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      summary: Delete a programming assignment
+      description: Deletes a specific programming assignment
+      tags: [Programming Assignments]
+      parameters:
+        - in: path
+          name: programming_assignment_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the programming assignment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message   
+
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  /courses/{course_id}/programmingAssignments:
+    get:
+      summary: Get all programming assignments in a course
+      description: Gets a list of all programming assignments belonging to a specific course
+      tags: [Programming Assignments]
+      parameters:
+        - in: path
+          name: course_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the course
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProgrammingAssignment'  # Reference model if defined
+        '400':
+          description: Bad
+
+  
+  /submissions/{submission_id}:
+    get:
+      summary: Get submission details
+      description: Gets the details of a specific assignment submission
+      tags: [Submission]
+      parameters:
+        - in: path
+          name: submission_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the assignment submission
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'  # Reference model if defined
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    put:
+      summary: Update submission details
+      description: Updates the details of a specific assignment submission
+      tags: [Submission]
+      parameters:
+        - in: path
+          name: submission_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the assignment submission
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'  # Reference model if defined
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'  # Reference model if defined
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      summary: Delete a submission
+      description: Deletes a specific assignment submission
+      tags: [Submission]
+      parameters:
+        - in: path
+          name: submission_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the assignment submission
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message   
+
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+  
+  /assignments/{assignment_id}/submissions:
+    get:
+      summary: Get all submissions for an assignment
+      description: Gets a list of all submissions for a specific assignment
+      tags: [Submission]
+      parameters:
+        - in: path
+          name: assignment_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the assignment
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submission'  # Reference model if defined
+    
+    post:
+      summary: Submit an assignment
+      description: Submits an assignment for a specific assignment
+      tags: [Submission]
+      parameters:
+        - in: path
+          name: assignment_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the assignment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'  # Reference model if defined
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'  # Reference model if defined
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+                
+  /lessons/{lesson_id}/lectureSummaries:
+    post:
+      summary: Create a lecture summary
+      description: Creates a new lecture summary for a lesson
+      tags: [Lecture Summaries]
+      parameters:
+        - in: path
+          name: lesson_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the lesson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LectureSummary'  # Reference model if defined
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LectureSummary'  # Reference model if defined
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+  /lectureSummaries/{summary_id}:
+    get:
+      summary: Get lecture summary details
+      description: Gets the details of a specific lecture summary
+      tags: [Lecture Summaries]
+      parameters:
+        - in: path
+          name: summary_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the lecture summary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LectureSummary'  # Reference model if defined
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    put:
+      summary: Update lecture summary details
+      description: Updates the details of a specific lecture summary
+      tags: [Lecture Summaries]
+      parameters:
+        - in: path
+          name: summary_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the lecture summary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LectureSummary'  # Reference model if defined
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LectureSummary'  # Reference model if defined
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+    delete:
+      summary: Delete a lecture summary
+      description: Deletes a specific lecture summary
+      tags: [Lecture Summaries]
+      parameters:
+        - in: path
+          name: summary_id
+          required: true
+          schema:
+            type: integer
+          description: The ID of the lecture summary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+        '404':
+          description: Not Found
+        '500':
+          description: Internal Server Error
+
+
+  /generate-embeddings:
+    post:
+      summary: Generate embeddings for a resource
+      description: Starts a Celery worker to generate and save embeddings for the given input
+      tags: [GenAI]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                pdf:
+                  type: string
+                  format: binary
+                url:
+                  type: string
+                  format: uri
+                youtube_video:
+                  type: string
+                  format: uri
+              oneOf:
+                - required: [pdf]
+                - required: [url]
+                - required: [youtube_video]
+      responses:
+        '202':
+          description: Accepted, embedding generation started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  task_id:
+                    type: string
+                    description: ID of the Celery task for tracking progress
+        '400':
+          description: Bad request, invalid or missing input
+
+  /chat:
+    post:
+      summary: Interact with the chatbot
+      description: Send a message to the chatbot and receive a response based on the generated embeddings
+      tags: [GenAI]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: User's message to the chatbot
+                chat_history:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      role:
+                        type: string
+                        enum: [user, assistant]
+                      content:
+                        type: string
+                  description: Previous messages and replies in the conversation
+              required:
+                - message
+      responses:
+        '200':
+          description: Successful response from the chatbot
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reply:
+                    type: string
+                    description: Chatbot's response to the user's message
+        '400':
+          description: Bad request, invalid input
+        '500':
+          description: Internal server error, chatbot processing failed
+
+  /summarize:
+    post:
+      summary: Summarize a given transcript
+      description: Accepts a transcript of text and returns a summarized version of it.
+      tags: [GenAI]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transcript:
+                  type: string
+                  description: The transcript text to be summarized.
+              required:
+                - transcript
+      responses:
+        '200':
+          description: Successful response with the summary of the transcript
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SummaryResponse'
+        '400':
+          description: Bad request if no transcript is provided
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error if there is an exception
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+
+          
+  /lessons/{lessonId}/Resources:
+    post:
+      summary: Create a new resource
+      description: Creates a new resource associated with a specific lesson.
+      tags: [Resources]
+      parameters:
+        - in: path
+          name: lessonId
+          required: true
+          description: The unique identifier of the lesson
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                resource_name:
+                  type: string
+                  description: Name of the resource
+                  example: My Awesome Resource
+                resource_type:
+                  type: string
+                  description: Type of resource (e.g., video, document, link)
+                  example: video
+                resource_url:
+                  type: string
+                  description: URL or path to the resource
+                  example: https://example.com/resource.mp4
+      responses:
+        '201':
+          description: Resource created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Lesson not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Get all resources within a lesson
+      description: Retrieves a list of resources associated with a specific lesson.
+      tags: [Resources]
+      parameters:
+        - in: path
+          name: lessonId
+          required: true
+          description: The unique identifier of the lesson
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of resources retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Resource'
+        '404':
+          description: Lesson not found
+        '500':
+          description: Internal server error
+  /resources/{resourceId}:
+    get:
+      summary: Get resource details
+      description: Retrieves information about a specific resource.
+      tags: [Resources]
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          description: The unique identifier of the resource
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Resource details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update resource details
+      description: Modifies existing resource information.
+      tags: [Resources]
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          description: The unique identifier of the resource
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resource'
+      responses:
+        '200':
+          description: Resource updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Resource'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a resource
+      description: Removes a specific resource.
+      tags: [Resources]
+      parameters:
+        - in: path
+          name: resourceId
+          required: true
+          description: The unique identifier of the resource
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Resource deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                    example: Resource deleted successfully
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+          
+
+  /courses/{courseId}/discussionthreads:
+    post:
+      summary: Create a new discussion thread
+      description: Creates a new discussion thread within a specific course.
+      tags: [Discussion Threads]
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          description: The unique identifier of the course
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                topic:
+                  type: string
+                  description: Topic of the discussion thread
+                  example: Interesting question about the lecture
+                created_by:  # Assuming created_by is a user ID
+                  type: integer
+                  format: int64
+                  description: User ID of the thread creator
+                created_at:  # Assuming created_at is a timestamp
+                  type: string
+                  format: date-time
+                  description: Timestamp of thread creation
+      responses:
+        '201':
+          description: Discussion thread created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscussionThread'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Course not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Get all discussion threads within a course
+      description: Retrieves a list of discussion threads associated with a specific course.
+      tags: [Discussion Threads]
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          description: The unique identifier of the course
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of discussion threads retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscussionThread'
+        '404':
+          description: Course not found
+        '500':
+          description: Internal server error
+  /discussionthreads/{threadId}:
+    get:
+      summary: Get discussion thread details
+      description: Retrieves information about a specific discussion thread.
+      tags: [Discussion Threads]
+      parameters:
+        - in: path
+          name: threadId
+          required: true
+          description: The unique identifier of the discussion thread
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Discussion thread details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscussionThread'
+        '404':
+          description: Discussion thread not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update discussion thread details
+      description: Modifies existing discussion thread information.
+      tags: [Discussion Threads]
+      parameters:
+        - in: path
+          name: threadId
+          required: true
+          description: The unique identifier of the discussion thread
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DiscussionThread'
+      responses:
+        '200':
+          description: Discussion thread updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscussionThread'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Discussion thread not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a discussion thread
+      description: Removes a specific discussion thread.
+      tags: [Discussion Threads]
+      parameters:
+        - in: path
+          name: threadId
+          required: true
+          description: The unique identifier of the discussion thread
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Discussion thread deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                    example: Discussion Thread deleted successfully
+        '404':
+          description: Discussion thread not found
+        '500':
+          description: Internal server error
+          
+  /discussionThreads/{threadId}/posts:
+    post:
+      summary: Create a new post
+      description: Creates a new post within a specific discussion thread.
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: threadId
+          required: true
+          description: The unique identifier of the discussion thread
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                author_id:  # Assuming author_id is a user ID
+                  type: integer
+                  format: int64
+                  description: User ID of the post author
+                content:
+                  type: string
+                  description: Content of the post
+                  example: This is a great discussion!
+                created_at:  # Assuming created_at is a timestamp
+                  type: string
+                  format: date-time
+                  description: Timestamp of post creation
+      responses:
+        '201':
+          description: Post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Discussion thread not found
+        '500':
+          description: Internal server error
+    get:
+      summary: Get all posts within a discussion thread
+      description: Retrieves a list of posts associated with a specific discussion thread.
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: threadId
+          required: true
+          description: The unique identifier of the discussion thread
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: List of posts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+        '404':
+          description: Discussion thread not found
+        '500':
+          description: Internal server error
+  /posts/{postId}:
+    get:
+      summary: Get post details
+      description: Retrieves information about a specific post.
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          description: The unique identifier of the post
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Post details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update post content
+      description: Modifies the content of an existing post.
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          description: The unique identifier of the post
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  description: Updated content of the post
+                  example: Adding more details to my previous post
+      responses:
+        '200':
+          description: Post updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a post
+      description: Removes a specific post.
+      tags: [Posts]
+      parameters:
+        - in: path
+          name: postId
+          required: true
+          description: The unique identifier of the post
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Post deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                    example: Post deleted successfully
+        '404':
+          description: Post not found
+        '500':
+          description: Internal server error
+
+  /courses/{courseId}/qaSessions:
+    post:
+      summary: Create a new QA session
+      description: Creates a new QA session associated with a specific course.
+      tags: [Question Answer (QA) Sessions]
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          description: The unique identifier of the course
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instructor_id:  # Assuming instructor_id is a user ID
+                  type: integer
+                  format: int64
+                  description: User ID of the instructor
+                session_date:  # Assuming session_date is a date
+                  type: string
+                  format: date
+                  description: Date of the QA session
+                topic:
+                  type: string
+                  description: Topic of the QA session
+                  example: Exam preparation Q&A
+                recording_url:
+                  type: string
+                  description: URL of the session recording (optional)
+                  example: https://example.com/qa-session.mp4
+      responses:
+        '201':
+          description: QA session created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QASession'
+        '400':
+          description: Invalid request data
+        '404':
+          description: Course not found
+        '500':
+          description: Internal server error
+  /qaSessions/{sessionId}:
+    get:
+      summary: Get QA session details
+      description: Retrieves information about a specific QA session.
+      tags: [Question Answer (QA) Sessions]
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          description: The unique identifier of the QA session
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: QA session details retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QASession'
+        '404':
+          description: QA Session not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update QA session details
+      description: Modifies existing QA session information.
+      tags: [Question Answer (QA) Sessions]
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          description: The unique identifier of the QA session
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QASession'
+      responses:
+        '200':
+          description: QA session updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QASession'
+        '400':
+          description: Invalid request data
+        '404':
+          description: QA Session not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete a QA session
+      description: Removes a specific QA session.
+      tags: [Question Answer (QA) Sessions]
+      parameters:
+        - in: path
+          name: sessionId
+          required: true
+          description: The unique identifier of the QA session
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: QA Session deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                    example: QA Session deleted successfully
+        '404':
+          description: QA Session not found
+        '500':
+          description: Internal server error
+
+
+    
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the user
+        username:
+          type: string
+          description: Username for login
+        email:
+          type: string
+          description: User's email address
+        role:
+          type: string
+          enum:
+            - Student
+            - TA
+            - Instructor
+            - Admin
+          description: User's role in the system
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp of user creation
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp of user update
+        profile:
+          $ref: '#/components/schemas/UserProfileDetail'
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+        submissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Submission'
+        progressTrackings:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgressTracking'
+        discussionThreads:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscussionThread'
+
+    UserProfileDetail:
+      type: object
+      properties:
+        user_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the user
+        full_name:
+          type: string
+          description: Full name of the user
+        bio:
+          type: string
+          description: User's bio
+        profile_picture:
+          type: string
+          format: uri
+          description: URL of the user's profile picture
+        badges:
+          type: array
+          items:
+            type: string
+          description: Array of badges earned by the user
+        e_portfolio:
+          type: string
+          description: Link to the user's e-portfolio
+        contact_info:
+          type: string
+          description: Contact information of the user
+        language_preference:
+          type: string
+          description: User's preferred language
+
+    Course:
+      type: object
+      properties:
+        course_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the course
+        course_name:
+          type: string
+          description: Name of the course
+        description:
+          type: string
+          description: Course description
+        instructor:
+          $ref: '#/components/schemas/User'
+        category:
+          type: string
+          description: Course category
+        start_date:
+          type: string
+          format: date
+          description: Course start date
+        end_date:
+          type: string
+          format: date
+          description: Course end date
+        modules:
+          type: array
+          items:
+            $ref: '#/components/schemas/Module'
+        assignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+        programmingAssignments:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgrammingAssignment'
+        discussionThreads:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscussionThread'
+        qaSessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QASession'
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+
+    Module:
+      type: object
+      properties:
+        module_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the module
+        course:
+          $ref: '#/components/schemas/Course'
+        module_name:
+          type: string
+          description: Name of the module
+        order:
+          type: integer
+          description: Order of the module within the course
+        lessons:
+          type: array
+          items:
+            $ref: '#/components/schemas/Lesson'
+
+    Lesson:
+      type: object
+      properties:
+        lesson_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the lesson
+        module:
+          $ref: '#/components/schemas/Module'
+        lesson_name:
+          type: string
+          description: Name of the lesson
+        content:
+          type: string
+          description: Lesson content
+        video_url:
+          type: string
+          description: URL of the lesson video (optional)
+        transcript:
+          type: string
+          description: Lesson transcript
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resource'
+        lectureSummary:
+          $ref: '#/components/schemas/LectureSummary'
+
+    Assignment:
+      type: object
+      properties:
+        assignment_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the assignment
+        course:
+          $ref: '#/components/schemas/Course'
+        title:
+          type: string
+          description: Assignment title
+        description:
+          type: string
+          description: Assignment description
+        due_date:
+          type: string
+          format: date
+          description: Assignment due date
+        submissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Submission'
+
+    ProgrammingAssignment:
+      type: object
+      properties:
+        programming_assignment_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the programming assignment
+        course:
+          $ref: '#/components/schemas/Course'
+        problem_statement:
+          type: string
+          description: Problem statement for the assignment
+        input_format:
+          type: string
+          description: Input format for the assignment
+        output_format:
+          type: string
+          description: Output format for the assignment
+        test_cases:
+          type: string
+          description: Test cases for the assignment
+
+    Submission:
+      type: object
+      properties:
+        submission_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the submission
+        assignment:
+          $ref: '#/components/schemas/Assignment'
+        student:
+          $ref: '#/components/schemas/User'
+        submission_content:
+          type: string
+          description: Submitted content
+        grade:
+          type: string
+          description: Assignment grade
+        feedback:
+          type: string
+          description: Instructor feedback
+        submitted_at:
+          type: string
+          format: date-time
+          description: Submission timestamp
+
+    ProgressTracking:
+      type: object
+      properties:
+        progress_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the progress tracking record
+        student:
+          $ref: '#/components/schemas/User'
+        course:
+          $ref: '#/components/schemas/Course'
+        module:
+          $ref: '#/components/schemas/Module'
+        lesson:
+          $ref: '#/components/schemas/Lesson'
+        completion_status:
+          type: string
+          description: Completion status of the lesson (e.g., completed, in_progress, not_started)
+
+    LectureSummary:
+      type: object
+      properties:
+        summary_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the lecture summary
+        lesson:
+          $ref: '#/components/schemas/Lesson'
+        ai_generated_summary:
+          type: string
+          description: AI generated summary of the lesson
+        manual_revision:
+          type: string
+          description: Manual revisions to the summary
+
+    Resource:
+      type: object
+      properties:
+        resource_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the resource
+        lesson:
+          $ref: '#/components/schemas/Lesson'
+        resource_name:
+          type: string
+          description: Name of the resource
+        resource_type:
+          type: string
+          enum:
+            - Video
+            - Document
+            - Link
+          description: Type of resource
+        resource_url:
+          type: string
+          description: URL of the resource
+
+    DiscussionThread:
+      type: object
+      properties:
+        thread_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the discussion thread
+        course:
+          $ref: '#/components/schemas/Course'
+        created_by:
+          $ref: '#/components/schemas/User'
+        topic:
+          type: string
+          description: Topic of the discussion thread
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp of thread creation
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+
+    Post:
+      type: object
+      properties:
+        post_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the post
+        thread:
+          $ref: '#/components/schemas/DiscussionThread'
+        author:
+          $ref: '#/components/schemas/User'
+        content:
+          type: string
+          description: Content of the post
+        created_at:
+          type: string
+          format: date-time
+          description: Timestamp of post creation
+
+    QASession:
+      type: object
+      properties:
+        session_id:
+          type: integer
+          format: int64
+          description: Unique identifier of the QA session
+        course:
+          $ref: '#/components/schemas/Course'
+        instructor:
+          $ref: '#/components/schemas/User'
+        session_date:
+          type: string
+          format: date
+          description: Date of the QA session
+        topic:
+          type: string
+          description: Topic of the QA session
+        recording_url:
+          type: string
+          description: URL of the session recording (optional)
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing the issue.
+    SummaryResponse:
+      type: object
+      properties:
+        summary:
+          type: string
+          description: The summarized text.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

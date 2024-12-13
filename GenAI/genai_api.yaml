@@ -1,0 +1,71 @@
+openapi: 3.0.3
+info:
+  title: Summarization API
+  description: API for summarizing text using a transformer model.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000
+    description: Local development server
+paths:
+  /summarize:
+    post:
+      summary: Summarize a given transcript
+      description: Accepts a transcript of text and returns a summarized version of it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transcript:
+                  type: string
+                  description: The transcript text to be summarized.
+              required:
+                - transcript
+      responses:
+        '200':
+          description: Successful response with the summary of the transcript
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  summary:
+                    type: string
+                    description: The summarized text.
+        '400':
+          description: Bad request if no transcript is provided
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating no transcript was provided.
+        '500':
+          description: Internal server error if there is an exception
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message with details of the exception.
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message describing the issue.
+    SummaryResponse:
+      type: object
+      properties:
+        summary:
+          type: string
+          description: The summarized text.
+
